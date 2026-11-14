@@ -5,6 +5,9 @@
 # How to use / 如何使用
 把仓库链接发给你的Agent，让他安装  
 
+
+
+## What it does
 Keeps your monitor layout stable while third-party desktop suites are running.
 
 Desktop management suites (PC Manager style applications) reconfigure displays when they
@@ -13,10 +16,8 @@ position in the virtual desktop. The result is that your external monitor ends u
 resolution the suite picked, and your carefully arranged layout is gone.
 
 This tool records the layout you configured while no session is active, and restores it
-whenever a watched suite changes it.
-
-## What it does
-
+whenever a watched suite changes it.  
+  
 - Learns the layout of every physical display while the watched process is not running.
 - Freezes that snapshot as the desired baseline once the watched process appears.
 - Re-checks every 400 ms and writes back any physical display whose resolution or position changed.
