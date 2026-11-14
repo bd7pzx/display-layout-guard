@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-# How to use / 如何使用
+# How to use
 Send this repo to your Agent and let it install.
 
 
@@ -11,7 +11,7 @@ Send this repo to your Agent and let it install.
 Keeps your monitor layout stable while third-party desktop suites are running.
 
 Desktop management suites (PC Manager style applications) reconfigure displays when they
-start a multi-screen session: they change a monitor's resolution or move it to another
+start a multi-screen session(Like Huawei PCManager): they change a monitor's resolution or move it to another
 position in the virtual desktop. The result is that your external monitor ends up at the
 resolution the suite picked, and your carefully arranged layout is gone.
 
