@@ -17,13 +17,19 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $InstallDir = Join-Path $env:LOCALAPPDATA 'DisplayLayoutGuard'
-$StartupDir = [Environment]::GetFolderPath('Startup')
-$Launcher   = Join-Path $StartupDir 'DisplayLayoutGuard.vbs'
 $ScriptName = 'display_guard.py'
+$RunKey     = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+$RunName    = 'DisplayLayoutGuard'
 
-if (Test-Path $Launcher) {
-    Remove-Item $Launcher -Force
-    Write-Host "Removed launcher: $Launcher"
+if (Get-ItemProperty -Path $RunKey -Name $RunName -ErrorAction SilentlyContinue) {
+    Remove-ItemProperty -Path $RunKey -Name $RunName -Force
+    Write-Host "Removed autostart entry: $RunName"
+}
+
+$legacy = Join-Path ([Environment]::GetFolderPath('Startup')) 'DisplayLayoutGuard.vbs'
+if (Test-Path $legacy) {
+    Remove-Item $legacy -Force -ErrorAction SilentlyContinue
+    Write-Host "Removed legacy launcher: $legacy"
 }
 
 Get-CimInstance Win32_Process -Filter "Name = 'pythonw.exe'" -ErrorAction SilentlyContinue |

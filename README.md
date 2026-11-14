@@ -45,8 +45,9 @@ that matter: the watched process name and the virtual display prefix.
 src\install.cmd
 ```
 
-Copies the guard into `%LOCALAPPDATA%\DisplayLayoutGuard`, registers a windowless launcher
-in the current user's Startup folder, and starts it immediately.
+Copies the guard into `%LOCALAPPDATA%\DisplayLayoutGuard`, registers a per-user autostart
+entry under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, and starts it immediately.
+No administrator rights and no Startup-folder write are required.
 
 ## Uninstall
 

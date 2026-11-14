@@ -16,7 +16,7 @@ docs/scope.md                    allowed use
 ## Conventions
 
 - Python standard library only. Do not add dependencies.
-- Never write outside `%LOCALAPPDATA%\DisplayLayoutGuard` and the current user's Startup folder.
+- Never write outside `%LOCALAPPDATA%\DisplayLayoutGuard` and the per-user `Run` key.
 - Every script must be idempotent: running it twice must not create duplicates or errors.
 - Log lines are one event per line, prefixed with a timestamp.
 - Keep all repository text free of vendor names, product names, file hashes and memory offsets.

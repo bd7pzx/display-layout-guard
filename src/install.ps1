@@ -3,10 +3,9 @@
     Install or repair the Display Layout Guard for the current user.
 
 .DESCRIPTION
-    Copies the guard into %LOCALAPPDATA%\DisplayLayoutGuard, writes a windowless
-    launcher into the current user's Startup folder, and starts it if it is not
-    already running. Idempotent: running it repeatedly produces one launcher and
-    one process.
+    Copies the guard into %LOCALAPPDATA%\DisplayLayoutGuard, registers a per-user
+    autostart entry under HKCU\Software\Microsoft\Windows\CurrentVersion\Run, and
+    starts it if it is not already running. Idempotent.
 
 .PARAMETER Verify
     Only report the current installation state; change nothing.
@@ -23,12 +22,12 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $InstallDir = Join-Path $env:LOCALAPPDATA 'DisplayLayoutGuard'
-$StartupDir = [Environment]::GetFolderPath('Startup')
-$Launcher    = Join-Path $StartupDir 'DisplayLayoutGuard.vbs'
-$ScriptName  = 'display_guard.py'
-$SourceFile  = Join-Path $PSScriptRoot $ScriptName
-$TargetFile  = Join-Path $InstallDir $ScriptName
-$LogFile     = Join-Path $InstallDir 'display_guard.log'
+$ScriptName = 'display_guard.py'
+$SourceFile = Join-Path $PSScriptRoot $ScriptName
+$TargetFile = Join-Path $InstallDir $ScriptName
+$LogFile    = Join-Path $InstallDir 'display_guard.log'
+$RunKey     = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+$RunName    = 'DisplayLayoutGuard'
 
 function Find-Pythonw {
     $candidates = @()
@@ -47,13 +46,17 @@ function Get-GuardProcesses {
         Where-Object { $_.CommandLine -and $_.CommandLine -like "*$ScriptName*" }
 }
 
+function Get-RunEntry {
+    (Get-ItemProperty -Path $RunKey -Name $RunName -ErrorAction SilentlyContinue).$RunName
+}
+
 function Report-State {
     $pythonw = Find-Pythonw
     $procs = @(Get-GuardProcesses)
     [pscustomobject]@{
         InstallDir    = $InstallDir
         ScriptPresent = (Test-Path $TargetFile)
-        Launcher      = (Test-Path $Launcher)
+        RunEntry      = if (Get-RunEntry) { 'present' } else { 'missing' }
         Pythonw       = if ($pythonw) { $pythonw } else { 'not found' }
         Processes     = $procs.Count
         LogFile       = (Test-Path $LogFile)
@@ -77,14 +80,12 @@ if (-not $pythonw) {
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 Copy-Item $SourceFile $TargetFile -Force
 
-$vbs = @"
-Set sh = CreateObject("WScript.Shell")
-sh.Run """$pythonw"" ""$TargetFile""", 0, False
-"@
-Set-Content -Path $Launcher -Value $vbs -Encoding ASCII
+$command = '"{0}" "{1}"' -f $pythonw, $TargetFile
+New-Item -Path $RunKey -Force | Out-Null
+New-ItemProperty -Path $RunKey -Name $RunName -Value $command -PropertyType String -Force | Out-Null
 
 if (-not (Get-GuardProcesses)) {
-    Start-Process -FilePath 'wscript.exe' -ArgumentList ('"' + $Launcher + '"') -WindowStyle Hidden
+    Start-Process -FilePath $pythonw -ArgumentList ('"' + $TargetFile + '"') -WindowStyle Hidden
     Start-Sleep -Seconds 2
 }
 
