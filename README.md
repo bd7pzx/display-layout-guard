@@ -1,5 +1,7 @@
 # Display Layout Guard
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Keeps your monitor layout stable while third-party desktop suites are running.
 
 Desktop management suites (PC Manager style applications) reconfigure displays when they

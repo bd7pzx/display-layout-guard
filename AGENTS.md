@@ -8,6 +8,7 @@ Operational contract for automated agents working in this repository.
 src/display_guard.py             guard implementation, stdlib only
 src/install.ps1                  idempotent installer
 src/uninstall.ps1                idempotent remover
+README.zh-CN.md                  Simplified Chinese README
 docs/display-lock.md             how the guard observes and restores layouts
 docs/desktop-suite-integration.md  configuring watched process and virtual display prefix
 docs/scope.md                    allowed use
