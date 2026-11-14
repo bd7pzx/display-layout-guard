@@ -3,7 +3,7 @@
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 # How to use / 如何使用
-把仓库链接发给你的Agent，让他安装  
+Send this repo to your Agent and let it install.
 
 
 
